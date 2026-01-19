@@ -1,16 +1,20 @@
 import React from 'react'
 import WorkoutTracker from './components/WorkoutTracker';
-import { Headers } from './components/Headers';
+import { Headers, LargeHeader } from './components/Headers';
+import PersonalBest from './components/PersonalBest';
 
 function App() {
   return (
     <>
-    <h1 className="text-3xl font-bold underline text-red-300">
-      Hello world!
-    </h1>
-    <Headers title={'Progressive Overload Tracker'} />
+    <Headers title="Headers: Progressive Overload Tracker">
+      </Headers>
+    <LargeHeader title={'Large Modern Header 1'} />
+    <LargeHeader title={'Large Modern Header 2'}>
+    <span>the best in the world</span>
+    </LargeHeader>
+
     <WorkoutTracker />
-  
+    <PersonalBest />
     </>
   )
 }

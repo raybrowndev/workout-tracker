@@ -19,62 +19,89 @@ const initialState = {
   newWorkout: "",
 };
 
+// type WorkoutAction = {
+//   weight: number | null;
+//   reps: number;
+//   date: string | null;
+//   selectedWorkout: string;
+//   newWorkout: string;
+// };
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "SET_WEIGHT":
-      return { ...state, weight: action.payload };
-    case "ADD_REP":
-      return { ...state, reps: state.reps + 10 };
-    case "REMOVE_REP":
-      return { ...state, reps: Math.max(state.reps - 1, 0) };
-    case "SET_DATE":
-      return { ...state, date: action.payload };
-    case "SET_SELECTED_WORKOUT":
-      return { ...state, selectedWorkout: action.payload };
-    case "SAVE_WORKOUT":
-      const newEntry = {
-        date: new Date(state.date).getTime(), // Store date as a timestamp for sorting
-        displayDate: new Date(state.date).toLocaleDateString("en-GB", {
-          weekday: "long",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-        workout: state.selectedWorkout,
-        weight: `${state.weight} kg`,
-        reps: state.reps,
-      };
-      return {
-        ...state,
-        entries: [...state.entries, newEntry],
-        weight: "",
-        reps: 0,
-        date: "",
-      };
-    case "ADD_WORKOUT":
-      if (state.newWorkout && !state.workouts.includes(state.newWorkout)) {
+type WorkoutAction =
+  | { type: "SET_WEIGHT"; payload: number }
+  | { type: "SET_REPS"; payload: number }
+  | { type: "SET_DATE"; payload: string }
+  | { type: "SET_SELECTED_WORKOUT"; payload: string }
+  | { type: "SET_NEW_WORKOUT"; payload: string }
+  | { type: "SAVE_WORKOUT" };
+
+const reducer = (state: { 
+      reps: number; 
+      date: string | number | Date; 
+      selectedWorkout: any; 
+      weight: any; 
+      entries: any; 
+      newWorkout: any; 
+      workouts: string | any[];
+      }, 
+      
+  action: { type: any; payload: any; }) => {
+    switch (action.type) {
+      case "SET_WEIGHT":
+        return { ...state, weight: action.payload };
+      case "ADD_REP":
+        return { ...state, reps: state.reps + 10 };
+      case "REMOVE_REP":
+        return { ...state, reps: Math.max(state.reps - 1, 0) };
+      case "SET_DATE":
+        return { ...state, date: action.payload };
+      case "SET_SELECTED_WORKOUT":
+        return { ...state, selectedWorkout: action.payload };
+      case "SAVE_WORKOUT":
+        const newEntry = {
+          date: new Date(state.date).getTime(), // Store date as a timestamp for sorting
+          displayDate: new Date(state.date).toLocaleDateString("en-GB", {
+            weekday: "long",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          workout: state.selectedWorkout,
+          weight: `${state.weight} kg`,
+          reps: state.reps,
+        };
         return {
           ...state,
-          workouts: [...state.workouts, state.newWorkout],
-          newWorkout: "",
+          entries: [...state.entries, newEntry],
+          weight: "",
+          reps: 0,
+          date: "",
         };
-      }
-      return state;
-    case "SET_NEW_WORKOUT":
-      return { ...state, newWorkout: action.payload };
-    default:
-      return state;
-  }
-};
+      case "ADD_WORKOUT":
+        if (state.newWorkout && !state.workouts.includes(state.newWorkout)) {
+          return {
+            ...state,
+            workouts: [...state.workouts, state.newWorkout],
+            newWorkout: "",
+          };
+        }
+        return state;
+      case "SET_NEW_WORKOUT":
+        return { ...state, newWorkout: action.payload };
+      default:
+        return state;
+    }
+  };
 
 const WorkoutTracker = () => {
+  
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleWeightChange = (e) => dispatch({ type: "SET_WEIGHT", payload: e.target.value });
-  const handleDateChange = (e) => dispatch({ type: "SET_DATE", payload: e.target.value });
-  const handleWorkoutChange = (e) => dispatch({ type: "SET_SELECTED_WORKOUT", payload: e.target.value });
-  const handleNewWorkoutChange = (e) => dispatch({ type: "SET_NEW_WORKOUT", payload: e.target.value });
+  const handleWeightChange = (e: { target: { value: any; }; }) => dispatch({ type: "SET_WEIGHT", payload: e.target.value });
+  const handleDateChange = (e: { target: { value: any; }; }) => dispatch({ type: "SET_DATE", payload: e.target.value });
+  const handleWorkoutChange = (e: { target: { value: any; }; }) => dispatch({ type: "SET_SELECTED_WORKOUT", payload: e.target.value });
+  const handleNewWorkoutChange = (e: { target: { value: any; }; }) => dispatch({ type: "SET_NEW_WORKOUT", payload: e.target.value });
+
 
   const handleSaveWorkout = () => {
     if (state.weight && state.reps > 0 && state.date) {
@@ -82,13 +109,14 @@ const WorkoutTracker = () => {
     }
   };
 
-  const handleAddWorkout = (e) => {
+
+  const handleAddWorkout = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     dispatch({ type: "ADD_WORKOUT" });
   };
 
   // Sort entries by date in ascending order (earliest to latest)
-  const sortedEntries = state.entries.sort((a, b) => a.date - b.date);
+  const sortedEntries = state.entries.sort((a: { date: number; }, b: { date: number; }) => a.date - b.date);
 
   return (
     <div className="p-4">
@@ -117,7 +145,7 @@ const WorkoutTracker = () => {
           onChange={handleWorkoutChange}
           className="border border-gray-300 p-1 rounded mt-1"
         >
-          {state.workouts.map((workout, index) => (
+          {state.workouts.map((workout: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined, index: React.Key | null | undefined) => (
             <option key={index} value={workout}>
               {workout}
             </option>
@@ -170,7 +198,7 @@ const WorkoutTracker = () => {
           </tr>
         </thead>
         <tbody>
-          {sortedEntries.map((entry, index) => (
+          {sortedEntries.map((entry: { displayDate: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; workout: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; weight: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; reps: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
             <tr key={index} className="hover:bg-gray-50">
               <td className="border border-gray-300 px-4 py-2">{entry.displayDate}</td>
               <td className="border border-gray-300 px-4 py-2">{entry.workout}</td>
