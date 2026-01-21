@@ -2,15 +2,16 @@ import React from 'react'
 
 //define the props you will pass 
 type HeaderProps = {
-  title: string; // specify the type
+  title: string; 
+  name: string;
   children?: React.ReactNode
 };
 
-export const LargeHeader = ({ title, children }: HeaderProps) =>{
+export const LargeHeader = ({ title, name, children }: HeaderProps) =>{
   return(
     <header className="mb-4">
       <h1 className="text-5xl font-bold">{title}</h1>
-      <p className="text-xl text-pink-400 font-semibold">The child is <span className="text-xl text-blue-400 font-semibold">{children}</span></p>
+      <p className="text-xl text-pink-400 font-semibold">Hey {name}, <span className="text-xl text-blue-400 font-semibold">{children}</span></p>
     </header>
   )
 }
